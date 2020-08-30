@@ -1,0 +1,23 @@
+image: lambci/lambda:build-python3.7
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  before_script:
+    - pip3 install -r src/requirements.txt
+  script:
+    - coverage run --source . -m pytest -vv --disable-warnings
+    - coverage xml -o coverage-project.xml
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - zip -r source.zip src/
+    - aws s3 cp source.zip s3://"$AWS_S3_BUCKET_NAME"/
+    - aws cloudformation package --template template.yaml --s3-bucket "$AWS_S3_BUCKET_NAME" --output-template template-export.yaml
+    - aws --region "$AWS_ACCOUNT_REGION" cloudformation deploy --template-file template-export.yaml --stack-name "$AWS_STACK_NAME" --parameter-overrides DatabaseHost=$DATABASE_HOST DatabaseUsername=$DATABASE_USERNAME DatabaseName=$DATABASE_NAME DatabasePassword=$DATABASE_PASSWORD --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset

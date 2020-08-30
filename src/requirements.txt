@@ -1,0 +1,11 @@
+pytest
+mock
+requests
+mysql-connector
+python-dateutil
+coverage
+boto3
+cerberus
+moto
+botocore
+requests-mock
