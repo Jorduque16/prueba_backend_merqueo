@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  This project stack contains the API resources for the Merqueo Test
+
+Parameters:
+  DatabaseHost:
+    Type: String
+    Description: Database host
+
+  DatabaseUsername:
+    Type: String
+    Description: Database username
+
+  DatabaseName:
+    Type: String
+    Description: Database name
+
+  DatabasePassword:
+    NoEcho: true
+    Type: String
+    Description: Database password
+    MinLength: 1
+    MaxLength: 41
+
+Globals:
+  Function:
+    Runtime: python3.7
+    Timeout: 300
+    Layers:
+      - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:mysql:1'
+    Environment:
+      Variables:
+        DATABASE_HOST: !Ref DatabaseHost
+        DATABASE_USERNAME: !Ref DatabaseUsername
+        DATABASE_PASSWORD: !Ref DatabasePassword
+        DATABASE_NAME: !Ref DatabaseName
+
+
+Resources:
+
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+
+  DeploymentApiId:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RestApi
+    Properties:
+      RestApiId: !Ref RestApi
+
+  OrderDistributionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.process
+      Role: !GetAtt LambdaBasicExecutionRole.Arn
+      FunctionName: !Join [ "-", [ !Ref "AWS::StackName", "OrderDistribution" ] ]
+      Events:
+        ApiRequest:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RestApi
+            Path: /orders/{id}/distribution
+            Method: get
+
+  OrderDistributionGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join [ "", [ "/aws/lambda/", !Join [ "-", [ !Ref "AWS::StackName", "OrderDistribution" ] ] ] ]
+      RetentionInDays: 7
+
+  LambdaBasicExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - !Ref CloudWatchLogsPolicy
+      RoleName: !Join [ '-',[ !Ref 'AWS::StackName', 'LambdaBasicExecutionRole' ] ]
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+
+  CloudWatchLogsPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'logs:CreateLogGroup'
+              - 'logs:CreateLogStream'
+              - 'logs:PutLogEvents'
+            Resource: '*'
+
+Outputs:
+  ApiId:
+    Description: "API ID"
+    Value: !Ref RestApi
+    Export:
+      Name: !Join [ ':', [ !Ref "AWS::StackName", 'ApiId' ] ]
+
+  BasePath:
+    Description: "API Gateway endpoint URL for Prod stage for e-flow API"
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Export:
+      Name: !Join [ ':', [ !Ref "AWS::StackName", 'BaseUrl' ] ]
