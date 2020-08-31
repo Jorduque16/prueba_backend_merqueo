@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `pruebamerqueo`.`inventory` (
   `quantity` TINYINT(10) NOT NULL,
   `date` DATE NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `product_id_index` (`product_id` ASC) VISIBLE)
+  INDEX `product_id_index` (`product_id` ASC) )
 ENGINE = InnoDB;
 
 
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS `pruebamerqueo`.`order_products` (
   `order_id` VARCHAR(45) NOT NULL,
   `quantity` TINYINT(10) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `product_id_index` (`product_id` ASC) VISIBLE,
-  INDEX `order_id_index` (`order_id` ASC) VISIBLE)
+  INDEX `product_id_index` (`product_id` ASC) ,
+  INDEX `order_id_index` (`order_id` ASC) )
 ENGINE = InnoDB;
 
 
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `pruebamerqueo`.`orders` (
   `address` VARCHAR(45) NOT NULL,
   `delivery_date` DATE NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `user_id_index` (`user_id` ASC) VISIBLE,
-  INDEX `delivery_date_index` (`delivery_date` ASC) VISIBLE)
+  INDEX `user_id_index` (`user_id` ASC) ,
+  INDEX `delivery_date_index` (`delivery_date` ASC) )
 ENGINE = InnoDB;
 
 
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `pruebamerqueo`.`provider_products` (
   `provider_id` VARCHAR(45) NOT NULL,
   `product_id` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `provider_id_index` (`provider_id` ASC) VISIBLE,
-  INDEX `product_id_index` (`product_id` ASC) VISIBLE)
+  INDEX `provider_id_index` (`provider_id` ASC) ,
+  INDEX `product_id_index` (`product_id` ASC) )
 ENGINE = InnoDB;
 
 

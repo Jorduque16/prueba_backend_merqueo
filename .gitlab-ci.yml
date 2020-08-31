@@ -9,8 +9,7 @@ test:
   before_script:
     - pip3 install -r src/requirements.txt
   script:
-    - coverage run --source . -m pytest -vv --disable-warnings
-    - coverage xml -o coverage-project.xml
+    - coverage run --source . -m pytest -c test/pytest.ini -vv --disable-warnings
 
 deploy:
   stage: deploy

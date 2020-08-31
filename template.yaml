@@ -55,7 +55,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
-      Handler: handler.process
+      Handler: Handler.process
       Role: !GetAtt LambdaBasicExecutionRole.Arn
       FunctionName: !Join [ "-", [ !Ref "AWS::StackName", "OrderDistribution" ] ]
       Events:
