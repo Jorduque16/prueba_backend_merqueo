@@ -36,3 +36,10 @@ class MySQLModel(Model):
         sql = f'SELECT id, user_id, priority FROM orders ORDER BY priority DESC;'
         self.cursor.execute(sql)
         return self.cursor.fetchall()
+
+    def get_top_sold_products(self, sort) -> list:
+        sql = f'SELECT pro.id, pro.name, COUNT(op.product_id) AS total FROM products AS pro ' \
+              f'JOIN order_products AS op ON pro.id = op.product_id GROUP BY op.product_id ' \
+              f'ORDER BY total {sort};'
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()

@@ -56,3 +56,11 @@ def get_inventory_distribution(event, context):
         })
 
     return inventory_distribution
+
+
+@ExceptionHandler.handler
+def get_top_sold_products(event, context):
+    model = ModelFactory.get_model('mysql')
+    parameters = event.get('queryStringParameters', {})
+    sort = 'ASC' if parameters.get('sort') == 'ASC' else 'DESC'
+    return model.get_top_sold_products(sort)

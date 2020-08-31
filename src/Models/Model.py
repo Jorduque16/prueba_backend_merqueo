@@ -16,8 +16,12 @@ class Model(ABC):
 
     @abstractmethod
     def get_provider_products(self, provider_id: int) -> list:
-        """ This method allows get the provider products""" \
- \
+        """ This method allows get the provider products"""
+
     @abstractmethod
     def get_orders(self) -> list:
-        """ This method allows get the order list"""
+        """ This method allows get the order list""" \
+ \
+    @abstractmethod
+    def get_top_sold_products(self, sort: str) -> list:
+        """ This method allows get the top sold products ordered by total"""
