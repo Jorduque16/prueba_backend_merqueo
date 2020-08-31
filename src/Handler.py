@@ -1,22 +1,16 @@
-import json
+import jmespath
 
+from Controllers.DistributionController import DistributionController
+from Exceptions import ExceptionHandler
 from Models.ModelFactory import ModelFactory
 
 
+@ExceptionHandler.handler
 def process(event, context):
     model = ModelFactory.get_model('mysql')
-    order = model.get_order_by_id(1)
-    print(order)
-    exit()
-    # Get the order products
-    # Get the inventory
-    # Get the provider products
-    # Eval if the inventory has the product
-    # Search which provider has the product
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "status": "success"
-        })
-    }
+    order_id = jmespath.search('pathParameters.id', event)
+    distribution_controller = DistributionController(model)
+    order_products = model.get_order_products(order_id=order_id)
+    provider_list = distribution_controller.get_provider_list()
+    distribution = distribution_controller.build_distribution(provider_list, order_products)
+    return distribution

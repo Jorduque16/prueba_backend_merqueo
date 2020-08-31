@@ -2,6 +2,7 @@ import sys
 
 from Classes.ErrorResponse import ErrorResponse
 from Classes.SucessResponse import SuccessResponse
+from Exceptions.DriverNotConfigured import DriverNotConfigured
 from Exceptions.RecordNotFound import RecordNotFoundException
 
 
@@ -14,6 +15,10 @@ def handler(func):
             response = ErrorResponse(status_code=404,
                                      message="The requested record was not found.",
                                      causes=exception.args)
+        except DriverNotConfigured as exception:
+            response = ErrorResponse(status_code=501,
+                                     message="Not implemented driver",
+                                     causes='')
         except:
             response = ErrorResponse(status_code=500,
                                      message="Ops! Sorry, we are currently experiencing technical problems, please "
