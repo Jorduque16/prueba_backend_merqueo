@@ -31,3 +31,8 @@ class MySQLModel(Model):
               f'WHERE pp.provider_id = {provider_id}'
         self.cursor.execute(sql)
         return self.cursor.fetchall()
+
+    def get_orders(self) -> list:
+        sql = f'SELECT id, user_id, priority FROM orders ORDER BY priority DESC;'
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()

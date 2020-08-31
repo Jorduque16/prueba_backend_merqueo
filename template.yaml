@@ -72,6 +72,27 @@ Resources:
       LogGroupName: !Join [ "", [ "/aws/lambda/", !Join [ "-", [ !Ref "AWS::StackName", "OrderDistribution" ] ] ] ]
       RetentionInDays: 7
 
+  InventoryDistributionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: Handler.get_inventory_distribution
+      Role: !GetAtt LambdaBasicExecutionRole.Arn
+      FunctionName: !Join [ "-", [ !Ref "AWS::StackName", "InventoryDistribution" ] ]
+      Events:
+        ApiRequest:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RestApi
+            Path: /inventory/distribution
+            Method: get
+
+  InventoryDistributionGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join [ "", [ "/aws/lambda/", !Join [ "-", [ !Ref "AWS::StackName", "InventoryDistribution" ] ] ] ]
+      RetentionInDays: 7
+
   LambdaBasicExecutionRole:
     Type: AWS::IAM::Role
     Properties:
