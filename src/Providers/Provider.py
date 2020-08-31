@@ -1,7 +1,16 @@
-from Providers.AbstractProvider import AbstractProvider
+from abc import ABC, abstractmethod
 
 
-class Provider(AbstractProvider):
+class Provider(ABC):
 
+    @abstractmethod
+    def handle(self, product: dict) -> dict:
+        pass
+
+    @abstractmethod
+    def has_product(self, product: dict):
+        pass
+
+    @abstractmethod
     def is_valid_product(self, provider_product, product):
-        return provider_product.get('product_id') == product.get('product_id')
+        pass

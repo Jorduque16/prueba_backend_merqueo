@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
+from Providers.Provider import Provider
 
 
-class AbstractProvider(ABC):
+class AbstractProvider(Provider):
     _products: list = []
     _name: str = ""
 
@@ -21,6 +21,5 @@ class AbstractProvider(ABC):
                 return True
         return False
 
-    @abstractmethod
     def is_valid_product(self, provider_product, product):
         pass
