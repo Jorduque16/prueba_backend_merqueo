@@ -5,5 +5,5 @@
 - source env/bin/activate
 - coverage run --source . -m pytest -c test/pytest.ini -vv --disable-warnings
 
-##Coverage
+## Coverage
 The coverage report will be saved in the htmlcov folder generated for the previous command.
